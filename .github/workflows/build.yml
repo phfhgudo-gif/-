@@ -19,8 +19,8 @@ jobs:
         with:
           gradle-version: '8.1.1'
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: build-${{ github.run_number }}
-          name: autoparry v2.1 (build ${{ github.run_number }})
-          files: project/Project/build/libs/*.jar
+       - uses: softprops/action-gh-release@v2
+         with:
+       tag_name: build-${{ github.run_number }}
+       name: autoparry v2.1 (build ${{ github.run_number }})
+       files: project/**/*.jar
