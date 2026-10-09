@@ -2,7 +2,7 @@ name: Build mod
 on:
   workflow_dispatch:
   push:
-    paths: ['EpicAutoHelper-source.zip']
+        paths: ['EpicAutoHelper-source.zip']
 permissions:
   contents: write
 jobs:
