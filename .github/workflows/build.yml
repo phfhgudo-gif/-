@@ -13,7 +13,8 @@ jobs:
       - name: Unpack source
         run: |
           unzip -o autofight.zip
-          cp -r autofight/src .
+          cp -rf autofight/. .
+          ls -la
 
       - uses: actions/setup-java@v4
         with:
