@@ -2,37 +2,27 @@ name: Build mod
 on:
   workflow_dispatch:
   push:
-        paths: ['EpicAutoHelper-source.zip']
+    paths: ['EpicAutoHelper-source.zip']
 permissions:
   contents: write
 jobs:
   build:
-    runs-on: ubuntu-latest 
-   steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
-
-  - name: Extract project
-    run: unzip -q EpicAutoHelper-source.zip -d project
-
-  - name: Set up Java 17
-    uses: actions/setup-java@v4
-    with:
-      distribution: temurin
-      java-version: '17'
-
-  - name: Set up Gradle
-    uses: gradle/actions/setup-gradle@v4
-    with:
-      gradle-version: '8.1.1'
-
-  - name: Build
-    working-directory: project/EpicAutoHelper
-    run: gradle build --no-daemon
-
-  - name: Create GitHub Release
-    uses: softprops/action-gh-release@v2
-    with:
-      tag_name: build-${{ github.run_number }}
-      name: autoparry v2.1 (build ${{ github.run_number }})
-      files: project/EpicAutoHelper/build/libs/*.jar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: unzip -q EpicAutoHelper-source.zip -d project
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.1.1'
+      - name: Build
+        working-directory: project
+        run: gradle build --no-daemon
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: autoparry v2.1 (build ${{ github.run_number }})
+          files: project/build/libs/*.jarjar
