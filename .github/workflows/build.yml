@@ -18,11 +18,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.1.1
-
       - name: Build
+        working-directory: autofight
         run: gradle build --no-daemon
 
       - uses: actions/upload-artifact@v4
         with:
           name: autofight-jar
-          path: build/libs/autofight-*.jar
+          path: autofight/build/libs/autofight-*.jar
