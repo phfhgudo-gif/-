@@ -1,28 +1,9 @@
-name: Build mod
-on:
-  workflow_dispatch:
-  push:
-    paths: ['EpicAutoHelper-source.zip']
-permissions:
-  contents: write
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: unzip -q EpicAutoHelper-source.zip -d project
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.1.1'
-      - name: Build
-        working-directory: project
-        run: gradle build --no-daemon
-      - uses: softprops/action-gh-release@v2
-        with:
-          tag_name: build-${{ github.run_number }}
-          name: autoparry v2.1 (build ${{ github.run_number }})
-          files: project/build/libs/*.jarjar
+name: Download Minecraft jar
+  # You may pin to the exact commit or the version.
+  # uses: meadowsys/action-get-mc-jar@ffebad0b5a274dec21f8ecf374978f0c5dc320c3
+  uses: meadowsys/action-get-mc-jar@v1.0.1
+  with:
+    # The Minecraft version to download
+    mcversion: # optional, default is latest
+    # The name of the file to save to, default "minecraft-<version>.jar" (if no extension is provided, it will be set as .jar)
+    filename: # optional, default is defaultnamelol
