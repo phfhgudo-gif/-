@@ -1,26 +1,28 @@
-name: Build mod
+name: Build AutoFight jar
+
 on:
-  workflow_dispatch:
   push:
-    paths: ['project.zip']
-permissions:
-  contents: write
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: unzip -q project.zip -d project
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: 17
+
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.1.1'
-      - name: Create GitHub Release
-       - uses: softprops/action-gh-release@v2
-         with:
-       tag_name: build-${{ github.run_number }}
-       name: autoparry v2.1 (build ${{ github.run_number }})
-       files: project/**/*.jar
+          gradle-version: 8.1.1
+
+      - name: Build
+        run: gradle build --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: autofight-jar
+          path: build/libs/autofight-*.jar
