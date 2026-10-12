@@ -1,34 +1,39 @@
-name: Build AutoFight jar
-
+name: Make jar
 on:
   push:
   workflow_dispatch:
-
 jobs:
-  build:
+  jar:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Unpack source
+      - name: Convert zip to jar
         run: |
-          unzip -o autofight.zip
-          cp -rf autofight/. .
-          ls -la
+          ZIP="$(ls *.zip 2>/dev/null | head -1)"
+          if [ -z "$ZIP" ]; then echo "ไม่พบไฟล์ .zip ใน repo"; exit 1; fi
+          rm -rf pack && mkdir pack
+          unzip -q "$ZIP" -d pack
+          M="$(find pack -type d -name thanpisitkub -path '*data/thanpisitkub' | head -1)"
+          if [ -z "$M" ]; then echo "ไม่พบโฟลเดอร์ data/thanpisitkub ใน zip"; find pack | head -40; exit 1; fi
+          ROOT="$(dirname "$(dirname "$M")")"
+          rm -f "$ROOT/README.txt"
+          mkdir -p "$ROOT/META-INF"
+          echo '{"pack":{"description":"thanpisitkub","pack_format":15}}' > "$ROOT/pack.mcmeta"
+          cat > "$ROOT/META-INF/mods.toml" <<'EOF'
+          modLoader="lowcodefml"
+          loaderVersion="[40,)"
+          license="MIT"
 
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 8.1.1
-
-      - name: Build
-        run: gradle build --no-daemon
-
+          [[mods]]
+          modId="thanpisitkub"
+          version="1.0.0"
+          displayName="thanpisitkub (Origins add-on)"
+          description="Origin thanpisitkub: Galaxy Impact + Galaxy Divide"
+          EOF
+          (cd "$ROOT" && zip -q -r "$GITHUB_WORKSPACE/thanpisitkub-1.0.0.jar" .)
+          echo "--- ไฟล์ระดับบนสุดใน jar ---"
+          unzip -l thanpisitkub-1.0.0.jar | head -15
       - uses: actions/upload-artifact@v4
         with:
-          name: health bar beam-jar
-          path: build/libs/autofight-*.jar
+          name: thanpisitkub-jar
+          path: thanpisitkub-2.0.0.jar
